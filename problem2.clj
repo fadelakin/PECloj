@@ -1,3 +1,6 @@
+; Fisher Adelakin
+; Project Euler problem 2
+
 (defn fibs
 	[upto]
 	(reduce +
