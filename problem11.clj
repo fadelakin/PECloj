@@ -29,3 +29,29 @@
 		(vec (map #(vec (map parse-int %))
 			(map split-at-space (split-lines *grid-str*))))))
 
+(defn line [n dx dy]
+	(fn [g x y]
+		(for [step (range 0 n)
+			:let [stepx (+ x (* dx step))
+			stepy (+ y (* dy step))]]
+			(nth (nth g stepy []) stepx 0))))
+
+(def lines-fn
+	(memoize
+		(fn [n]
+			[(line n 1 1)
+			 (line n 1 0)
+			 (line n 0 1)
+			 (line n 1 -1)])))
+
+(defn lines-in-grid [g n]
+	(for [x (range 0 (- (count (first g)) n))
+		  y (range 0 (- (count g) n))
+		  line-fn (lines-fn n)]
+		(line-fn g x y)))
+
+(defn max-line-in-grid [g n]
+	(apply max-key #(reduce * %) (lines-in-grid g n)))
+
+(let [max-line (max-line-in-grid *grid* 4)]
+	(println max-line " Your Total Señor: " (reduce * max-line)))
